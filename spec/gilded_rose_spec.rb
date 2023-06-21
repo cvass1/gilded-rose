@@ -16,16 +16,35 @@ describe GildedRose do
         expect(items[0].quality).to eq 39
       end
 
-      it "decreases in quality by 2 after the sell-in date" do
-        items = [Item.new("ordinary item", -1, 40)]
+      it "decreases in quality by 2 on the sell-in date" do
+        items = [Item.new("ordinary item", 0, 40)]
         GildedRose.new(items).update_quality()
         expect(items[0].quality).to eq 38
       end
 
-      it "min quality is 0" do
+      it "decreases in quality by 2 after the sell-in date" do
+        items = [Item.new("ordinary item", -2, 40)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 38
+      end
+
+      it "min quality is 0 after one update" do
         items = [Item.new("ordinary item", 50, 0)]
         GildedRose.new(items).update_quality()
         expect(items[0].quality).to eq 0
+      end
+
+      it "min quality is 0 after multiple updates" do
+        items = [Item.new("ordinary item", 50, 1)]
+        GildedRose.new(items).update_quality()
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 0
+      end
+
+      it "reduces the sell-in date by 1" do
+        items = [Item.new("ordinary item", 50, 1)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].sell_in).to eq 49
       end
     end
 
@@ -36,16 +55,35 @@ describe GildedRose do
         expect(items[0].quality).to eq 1
       end
 
-      it "increases in quality by 2 after the sell-in date" do
+      it "increases in quality by 2 on the sell-in date" do
         items = [Item.new("Aged Brie", 0, 0)]
         GildedRose.new(items).update_quality()
         expect(items[0].quality).to eq 2
       end
 
-      it "max quality is 50" do
+      it "increases in quality by 2 after the sell-in date" do
+        items = [Item.new("Aged Brie", -2, 0)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 2
+      end
+
+      it "quality cannot increase beyond 50 after one update" do
         items = [Item.new("Aged Brie", 10, 50)]
         GildedRose.new(items).update_quality()
         expect(items[0].quality).to eq 50
+      end
+
+      it "quality cannot increase beyond 50 after multiple updates" do
+        items = [Item.new("Aged Brie", 10, 50)]
+        GildedRose.new(items).update_quality()
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 50
+      end
+
+      it "reduces the sell-in date by 1" do
+        items = [Item.new("Aged Brie", 10, 50)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].sell_in).to eq 9
       end
     end
 
@@ -74,10 +112,10 @@ describe GildedRose do
         expect(items[0].quality).to eq 23
       end
 
-      it "max quality is 50" do
-        items = [Item.new("Backstage passes to a TAFKAL80ETC concert", 10, 50)]
+      it "increases in quality by 3 1 day before the sell-in date" do
+        items = [Item.new("Backstage passes to a TAFKAL80ETC concert", 1, 20)]
         GildedRose.new(items).update_quality()
-        expect(items[0].quality).to eq 50
+        expect(items[0].quality).to eq 23
       end
 
       it "quality drops to 0 after concert(sell-in date)" do
@@ -85,6 +123,32 @@ describe GildedRose do
         GildedRose.new(items).update_quality()
         expect(items[0].quality).to eq 0
       end
+
+      it "quality stays at 0 the day after concert(sell-in date)" do
+        items = [Item.new("Backstage passes to a TAFKAL80ETC concert", -1, 0)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 0
+      end
+
+      it "quality cannot increase beyond 50 after one update" do
+        items = [Item.new("Backstage passes to a TAFKAL80ETC concert", 10, 50)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 50
+      end
+
+      it "quality cannot increase beyond 50 after multiple updates" do
+        items = [Item.new("Backstage passes to a TAFKAL80ETC concert", 10, 50)]
+        GildedRose.new(items).update_quality()
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 50
+      end
+
+      it "reduces the sell-in date by 1" do
+        items = [Item.new("Backstage passes to a TAFKAL80ETC concert", 10, 50)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].sell_in).to eq 9
+      end
+
     end
 
     context "Item is Sulfuras:" do
@@ -94,12 +158,17 @@ describe GildedRose do
         expect(items[0].quality).to eq 30
       end
 
-      it "quality does not change after sell-in date" do
-        items = [Item.new("Sulfuras, Hand of Ragnaros", -10, 30)]
+      it "quality does not change on sell-in date" do
+        items = [Item.new("Sulfuras, Hand of Ragnaros", 0, 30)]
         GildedRose.new(items).update_quality()
         expect(items[0].quality).to eq 30
       end
-      
+
+      it "quality can be higher than 50 as its a legendary item" do
+        items = [Item.new("Sulfuras, Hand of Ragnaros", 20, 80)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 80
+      end      
     end
   end
 

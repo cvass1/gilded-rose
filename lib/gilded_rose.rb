@@ -9,6 +9,7 @@ class GildedRose
       item.quality += get_quality_change(item)
       item.quality = 50 if item.quality > 50 
       item.quality = 0 if item.quality < 0 
+      item.sell_in -= 1
     end
   end
 
