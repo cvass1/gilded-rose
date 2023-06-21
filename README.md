@@ -1,6 +1,6 @@
 # Gilded Rose
 
-- A refactoring challenge originally created by Terry Hughes (http://twitter.com/TerryHughes) and translated into Ruby by Emily Bache [here](https://github.com/emilybache/GildedRose-Refactoring-Kata/blob/main/README.md).
+A refactoring challenge originally created by Terry Hughes (http://twitter.com/TerryHughes) and translated into Ruby by Emily Bache [here](https://github.com/emilybache/GildedRose-Refactoring-Kata/blob/main/README.md).
 
 ## The task
 
@@ -55,6 +55,12 @@ legendary item and as such its Quality is 80 and it never alters.
 
 ## Design
 
+The code has been refectored to utilise individual classes for each type of Item.
+
+Each new class inherits from the original Item class and adds a method update_quality which implements it;s own specific quality change rules.
+
+The original GuildedRose class has been updated to simply call the update_quality method on each item and reduce the sell_in by 1.
+
 Class design plan:
 ![plan document](images/gilded-rose-class-design.png)
 
@@ -80,8 +86,7 @@ rspec
 ## Example
 
 ```ruby
-# irb
-load 'gilded_rose'
+# irb -r ./gilded_rose.rb
 
 items = [OrdinaryItem.new('ordinary item', 50, 40)]
 GildedRose.new(items).update_quality
