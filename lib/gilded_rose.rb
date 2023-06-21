@@ -33,6 +33,13 @@ class OrdinaryItem < Item
   end
 end
 
+class ConjuredItem < Item
+  def update_quality()
+    @quality +=  @sell_in > 0 ? -2 : -4
+    @quality = @quality.clamp(0, 50)
+  end
+end
+
 class AgedBrie < Item
   def update_quality()
     @quality +=  @sell_in > 0 ? 1 : 2
