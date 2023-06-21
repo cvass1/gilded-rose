@@ -6,44 +6,9 @@ class GildedRose
 
   def update_quality()    
     @items.each do |item|
-      item.quality += get_quality_change(item)
-      item.quality = 50 if item.quality > 50 
-      item.quality = 0 if item.quality < 0 
+      item.update_quality()
       item.sell_in -= 1
     end
-  end
-
-  def get_quality_change(item)
-    case item.name
-    when "Aged Brie"
-      brie_quality_change(item)
-    when "Backstage passes to a TAFKAL80ETC concert"
-      backstage_passes_quality_change(item)
-    when "Sulfuras, Hand of Ragnaros"
-      0
-    else
-      ordinary_quality_chage(item)
-    end
-  end
-
-  def brie_quality_change(item)
-    item.sell_in > 0 ? 1 : 2
-  end
-
-  def backstage_passes_quality_change(item)
-    if item.sell_in <= 0 
-      - item.quality
-    elsif item.sell_in < 6
-      3
-    elsif item.sell_in < 11
-      2
-    else
-      1
-    end
-  end  
-
-  def ordinary_quality_chage(item)
-    item.sell_in > 0 ? -1 : -2
   end
 end
 
@@ -60,3 +25,44 @@ class Item
     "#{@name}, #{@sell_in}, #{@quality}"
   end
 end
+
+class OrdinaryItem < Item
+  def update_quality()
+    @quality +=  @sell_in > 0 ? -1 : -2
+    @quality = @quality.clamp(0, 50)
+  end
+end
+
+class AgedBrie < Item
+  def update_quality()
+    @quality +=  @sell_in > 0 ? 1 : 2
+    @quality = @quality.clamp(0, 50)
+  end
+end
+
+class Sulfuras < Item
+  def update_quality()
+  end
+end
+
+class BackstagePass < Item
+  def update_quality()
+    @quality +=  get_quality_change()
+    @quality = @quality.clamp(0, 50)
+  end
+
+  def get_quality_change()
+    if @sell_in <= 0 
+      - @quality
+    elsif @sell_in < 6
+      3
+    elsif @sell_in < 11
+      2
+    else
+      1
+    end
+  end
+end
+
+
+
