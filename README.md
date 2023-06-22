@@ -57,7 +57,7 @@ legendary item and as such its Quality is 80 and it never alters.
 
 The code has been refectored to utilise individual classes for each type of Item.
 
-Each new class inherits from the original Item class and adds a method update_quality which implements it;s own specific quality change rules.
+Each new class inherits from the original Item class and adds a method update_quality which implements it's own specific quality change rules.
 
 The original GuildedRose class has been updated to simply call the update_quality method on each item and reduce the sell_in by 1.
 
